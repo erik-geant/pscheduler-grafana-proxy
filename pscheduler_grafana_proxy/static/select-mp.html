@@ -8,12 +8,23 @@
   <body>
 
     <div ng-controller="sls">
+        Tools:
+        <select
+            ng-options="t for t in tools"
+            ng-change="update_filter()"
+            ng-model="tool"></select>
+        Communities:
+        <select
+            ng-options="c for c in communities"
+            ng-change="update_filter()"
+            ng-model="community"></select>
         <table>
             <th colspan="3">Measurement Points</th>
-            <tr ng-repeat="mp in mplist">
+            <tr ng-repeat="mp in mplist" ng-show="mp.show">
                 <td>{{ mp.hostname }}</td>
                 <td>{{ mp.name }}</td>
                 <td>{{ mp.communities }}</td>
+                <td>{{ mp.tools }}</td>
             </tr>
         </table>
     </div>
