@@ -1,0 +1,21 @@
+<!doctype html>
+<html ng-app="psApp">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
+    <script src="sls.js"></script>
+    <link rel="stylesheet" href="default.css">
+  </head>
+  <body>
+
+    <div ng-controller="sls">
+        <table>
+            <th colspan="3">Measurement Points</th>
+            <tr ng-repeat="mp in mplist">
+                <td>{{ mp.hostname }}</td>
+                <td>{{ mp.name }}</td>
+                <td>{{ mp.communities }}</td>
+            </tr>
+        </table>
+    </div>
+  </body>
+</html>
