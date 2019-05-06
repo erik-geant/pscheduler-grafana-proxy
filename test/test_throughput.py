@@ -3,7 +3,7 @@ import json
 import responses
 from jsonschema import validate
 
-from perfsonar_data_helper.throughput import THROUGHPUT_RESPONSE_SCHEMA
+from pscheduler_grafana_proxy.throughput import THROUGHPUT_RESPONSE_SCHEMA
 
 
 @responses.activate

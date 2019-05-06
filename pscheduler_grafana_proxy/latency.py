@@ -1,5 +1,5 @@
 import jsonschema
-from perfsonar_data_helper.pscheduler import client
+from pscheduler_grafana_proxy.pscheduler import client
 
 
 LATENCY_TEST_PARAMS_SCHEMA = {

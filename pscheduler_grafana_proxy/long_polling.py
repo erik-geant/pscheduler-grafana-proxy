@@ -5,9 +5,9 @@ import time
 from flask import Blueprint, jsonify, session, request, Response
 from jsonschema import validate, ValidationError
 
-from perfsonar_data_helper import latency
-from perfsonar_data_helper import throughput
-from perfsonar_data_helper.pscheduler import client as pscheduler_client
+from pscheduler_grafana_proxy import latency
+from pscheduler_grafana_proxy import throughput
+from pscheduler_grafana_proxy.pscheduler import client as pscheduler_client
 
 api = Blueprint("long-polling-routes", __name__)
 
