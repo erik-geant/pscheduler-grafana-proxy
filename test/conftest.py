@@ -4,7 +4,7 @@ import tempfile
 import pytest
 import responses
 
-import perfsonar_grafana_proxy
+import pscheduler_grafana_proxy
 
 
 @pytest.fixture
@@ -26,7 +26,7 @@ def app_config():
 @pytest.fixture
 def client(app_config):
     os.environ["SETTINGS_FILENAME"] = app_config
-    return perfsonar_grafana_proxy.create_app().test_client()
+    return pscheduler_grafana_proxy.create_app().test_client()
 
 
 def _mock_responses(response_data):

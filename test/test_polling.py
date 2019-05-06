@@ -4,9 +4,9 @@ from jsonschema import validate
 import pytest
 import responses
 
-from perfsonar_grafana_proxy.long_polling import STATUS_RESPONSE_SCHEMA
-from perfsonar_grafana_proxy.latency import LATENCY_RESPONSE_SCHEMA
-from perfsonar_grafana_proxy.throughput import THROUGHPUT_RESPONSE_SCHEMA
+from pscheduler_grafana_proxy.long_polling import STATUS_RESPONSE_SCHEMA
+from pscheduler_grafana_proxy.latency import LATENCY_RESPONSE_SCHEMA
+from pscheduler_grafana_proxy.throughput import THROUGHPUT_RESPONSE_SCHEMA
 
 test_data = [
     # bad destination type

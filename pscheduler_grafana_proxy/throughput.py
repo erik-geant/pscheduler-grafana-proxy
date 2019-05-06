@@ -1,5 +1,5 @@
 import jsonschema
-from perfsonar_grafana_proxy.pscheduler import client
+from pscheduler_grafana_proxy.pscheduler import client
 
 
 THROUGHPUT_TEST_PARAMS_SCHEMA = {

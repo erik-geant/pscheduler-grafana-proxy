@@ -5,7 +5,7 @@ from flask import Blueprint, request, Response, current_app, jsonify
 import jsonschema
 import requests
 
-from perfsonar_grafana_proxy.pscheduler import client
+from pscheduler_grafana_proxy.pscheduler import client
 
 api = Blueprint("json-proxy", __name__)
 

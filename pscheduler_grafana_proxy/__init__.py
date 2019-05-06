@@ -23,11 +23,11 @@ def create_app():
 
     CORS(app)
 
-    from perfsonar_grafana_proxy import sls
-    from perfsonar_grafana_proxy import simple
-    from perfsonar_grafana_proxy import long_polling
-    from perfsonar_grafana_proxy import json_proxy
-    from perfsonar_grafana_proxy import example_routes
+    from pscheduler_grafana_proxy import sls
+    from pscheduler_grafana_proxy import simple
+    from pscheduler_grafana_proxy import long_polling
+    from pscheduler_grafana_proxy import json_proxy
+    from pscheduler_grafana_proxy import example_routes
 
     app.register_blueprint(simple.api)
     app.register_blueprint(long_polling.api)
@@ -36,7 +36,7 @@ def create_app():
 
     # SESSION_TYPE = "filesystem"
 
-    app.config.from_object("perfsonar_grafana_proxy.default_settings")
+    app.config.from_object("pscheduler_grafana_proxy.default_settings")
     if "SETTINGS_FILENAME" in os.environ:
         app.config.from_envvar("SETTINGS_FILENAME")
     else:

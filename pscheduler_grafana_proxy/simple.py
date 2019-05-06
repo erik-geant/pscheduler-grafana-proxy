@@ -3,10 +3,10 @@ import time
 
 from flask import Blueprint, current_app, jsonify, Response
 
-from perfsonar_grafana_proxy import latency
-from perfsonar_grafana_proxy import throughput
-from perfsonar_grafana_proxy import sls
-from perfsonar_grafana_proxy.pscheduler import client as pscheduler_client
+from pscheduler_grafana_proxy import latency
+from pscheduler_grafana_proxy import throughput
+from pscheduler_grafana_proxy import sls
+from pscheduler_grafana_proxy.pscheduler import client as pscheduler_client
 
 
 api = Blueprint("simple-routes", __name__)

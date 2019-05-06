@@ -3,7 +3,7 @@ import json
 import responses
 from jsonschema import validate
 
-from perfsonar_grafana_proxy.latency import LATENCY_RESPONSE_SCHEMA
+from pscheduler_grafana_proxy.latency import LATENCY_RESPONSE_SCHEMA
 
 
 @responses.activate
