@@ -18,7 +18,7 @@
             ng-options="c for c in communities"
             ng-change="update_filter()"
             ng-model="community"></select>
-        <table>
+        <!--table>
             <th colspan="3">Measurement Points</th>
             <tr ng-repeat="mp in mplist" ng-show="mp.show">
                 <td>{{ mp.hostname }}</td>
@@ -26,7 +26,15 @@
                 <td>{{ mp.communities }}</td>
                 <td>{{ mp.tools }}</td>
             </tr>
-        </table>
+        </table-->
+        <br>
+        Source: <select
+            ng-options="mp as mp.hostname + '|' + mp.name for mp in mplist|filter:{show:true}"
+            ng-model="source"></select>
+        <br>
+        Destination: <select
+            ng-options="mp as mp.hostname + '|' + mp.name for mp in mplist|filter:{show:true}"
+            ng-model="destination"></select>
     </div>
   </body>
 </html>

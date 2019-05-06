@@ -8,7 +8,9 @@ myApp.controller('sls', function($scope, $http) {
     $scope.community = "";
     $scope.tools = [];
     $scope.tool = "";
-    $scope.status = 'not yet loaded';
+
+    $scope.source = "";
+    $scope.destination = "";
 
     $http({
         method: 'GET',
