@@ -5,7 +5,7 @@ import tempfile
 import responses
 from jsonschema import validate
 import pytest
-from perfsonar_data_helper import sls
+from perfsonar_grafana_proxy import sls
 
 logging.basicConfig(level=logging.INFO)
 
@@ -49,9 +49,9 @@ MP_RESPONSE_SCHEMA = {
 
 
 def get_settings(dirname, bootstrap_url):
-    import perfsonar_data_helper
+    import perfsonar_grafana_proxy
     default_settings_filename = os.path.join(
-        perfsonar_data_helper.__path__[0],
+        perfsonar_grafana_proxy.__path__[0],
         "default_settings.py")
     with open(default_settings_filename) as f:
         contents = f.read()

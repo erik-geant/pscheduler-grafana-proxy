@@ -19,15 +19,15 @@ def create_app():
     """
 
     app = Flask(__name__)
-    app.secret_key = "super secret session key"
+    app.secret_key = "nobody can guess this"
 
     CORS(app)
 
-    from perfsonar_data_helper import sls
-    from perfsonar_data_helper import simple
-    from perfsonar_data_helper import long_polling
-    from perfsonar_data_helper import json_proxy
-    from perfsonar_data_helper import example_routes
+    from perfsonar_grafana_proxy import sls
+    from perfsonar_grafana_proxy import simple
+    from perfsonar_grafana_proxy import long_polling
+    from perfsonar_grafana_proxy import json_proxy
+    from perfsonar_grafana_proxy import example_routes
 
     app.register_blueprint(simple.api)
     app.register_blueprint(long_polling.api)
@@ -36,7 +36,7 @@ def create_app():
 
     # SESSION_TYPE = "filesystem"
 
-    app.config.from_object("perfsonar_data_helper.default_settings")
+    app.config.from_object("perfsonar_grafana_proxy.default_settings")
     if "SETTINGS_FILENAME" in os.environ:
         app.config.from_envvar("SETTINGS_FILENAME")
     else:
