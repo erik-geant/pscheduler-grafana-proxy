@@ -5,10 +5,8 @@ import logging
 import os
 from flask import Flask
 from flask_cors import CORS
-# from flask_session import Session
 
-# SECRET_KEY = '123456789012345678901234'
-# SESSION_TYPE = 'filesystem'
+from pscheduler_grafana_proxy import config
 
 
 def create_app():
@@ -18,42 +16,45 @@ def create_app():
     :return: a new flask app instance
     """
 
+    if "FLASK_SETTINGS_FILENAME" not in os.environ:
+        assert False, \
+            "environment variable 'FLASK_SETTINGS_FILENAME' must be defined"
+
     app = Flask(__name__)
-    app.secret_key = "nobody can guess this"
+
+    app.config.from_envvar("FLASK_SETTINGS_FILENAME")
+    assert "CONFIG_JSON_FILENAME" in app.config, (
+        "CONFIG_JSON_FILENAME not defined in %r"
+        % os.environ["FLASK_SETTINGS_FILENAME"])
+
+    assert os.path.isfile(app.config["CONFIG_JSON_FILENAME"]), (
+        "config file %r not found" %
+        app.config["CONFIG_JSON_FILENAME"])
+
+    with open(app.config["CONFIG_JSON_FILENAME"]) as f:
+        # test the config file can be loaded
+        logging.info("loading config from: %r"
+                     % app.config["CONFIG_JSON_FILENAME"])
+        app.config["CONFIG_PARAMS"] = config.load(f)
+
+    app.secret_key = "no one will ever guess this"
 
     CORS(app)
 
-    from pscheduler_grafana_proxy import sls
-    from pscheduler_grafana_proxy import simple
-    from pscheduler_grafana_proxy import long_polling
-    from pscheduler_grafana_proxy import json_proxy
-    from pscheduler_grafana_proxy import example_routes
+    # from pscheduler_grafana_proxy import sls
+    # from pscheduler_grafana_proxy import simple
+    # from pscheduler_grafana_proxy import long_polling
+    # from pscheduler_grafana_proxy import json_proxy
+    # from pscheduler_grafana_proxy import example_routes
+    #
+    # app.register_blueprint(simple.api)
+    # app.register_blueprint(long_polling.api)
+    # app.register_blueprint(example_routes.examples)
+    # app.register_blueprint(json_proxy.api, url_prefix='/json-proxy')
 
-    app.register_blueprint(simple.api)
-    app.register_blueprint(long_polling.api)
-    app.register_blueprint(example_routes.examples)
-    app.register_blueprint(json_proxy.api, url_prefix='/json-proxy')
-
-    # SESSION_TYPE = "filesystem"
-
-    app.config.from_object("pscheduler_grafana_proxy.default_settings")
-    if "SETTINGS_FILENAME" in os.environ:
-        app.config.from_envvar("SETTINGS_FILENAME")
-    else:
-        logging.debug(
-            "SETTINGS_FILENAME environment variable"
-            " not set, using default config")
-
-    # app.config["SESSION_TYPE"] = "filesystem"
+    from pscheduler_grafana_proxy.routes import sls
+    app.register_blueprint(sls.api, url_prefix='/sls')
 
     logging.debug(app.config)
-
-    # Session(app)
-    # sess.init_app(app)
-
-    if app.config["STARTUP_REFRESH_SLS_CACHE"]:
-        sls.update_cached_mps(
-            bootstrap_url=app.config["SLS_BOOTSTRAP_URL"],
-            cache_filename=app.config["SLS_CACHE_FILENAME"])
 
     return app

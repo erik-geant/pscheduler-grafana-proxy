@@ -14,6 +14,7 @@ setup(
         "flask-cors",
         "requests",
         "requests-futures",
-        "jsonschema"
+        "jsonschema",
+        "redis"
     ]
 )

@@ -55,9 +55,11 @@ def load_services(bootstrap_url):
 #     return "???"
 
 
-def update_cached_mps(bootstrap_url, cache_filename):
-    with open(cache_filename, "w") as f:
-        f.write(json.dumps(load_services(bootstrap_url)))
+def update_cached_mps(bootstrap_url, r):
+    r.set('pscheduler:sls', json.dumps(load_services(bootstrap_url)))
+
+def fetch_sls_cache(r):
+    return json.loads(r.get('pscheduler:sls').decode('utf-8'))
 
 
 def hostname_from_url(url):
@@ -70,7 +72,7 @@ def hostname_from_url(url):
     return m.group("hostname")
 
 
-def load_mps(tool, cache_filename):
+def load_mps(tool, r):
 
     _tool_name_equivalencies = {
         "owping": {"owping", "owamp"},
@@ -89,8 +91,7 @@ def load_mps(tool, cache_filename):
             return True
         return False
 
-    with open(cache_filename) as f:
-        sls_cache = json.loads(f.read())
+    sls_cache = fetch_sls_cache(r)
     for url in sls_cache.keys():
         for s in sls_cache[url]:
             if _has_tool(tool, s):
@@ -111,15 +112,12 @@ def load_mps(tool, cache_filename):
 
 
 if __name__ == "__main__":
-    from pscheduler_grafana_proxy import default_settings
-
+    import redis
+    SLS_BOOTSTRAP_URL = 'http://ps-west.es.net:8096/lookup/activehosts.json'
+    REDIS_HOSTNAME = 'test-dashboard-storage01.geant.org'
+    REDIS_PORT = 6379
+    r = redis.StrictRedis(REDIS_HOSTNAME, REDIS_PORT)
     logging.basicConfig(level=logging.DEBUG)
-
-    update_cached_mps(
-        default_settings.SLS_BOOTSTRAP_URL,
-        default_settings.SLS_CACHE_FILENAME)
-    mps = load_mps(
-        "owping",
-        default_settings.SLS_CACHE_FILENAME)
-
+    update_cached_mps(SLS_BOOTSTRAP_URL, r)
+    mps = load_mps('owping', r)
     logging.info(list(mps))
