@@ -1,6 +1,6 @@
 var myApp = angular.module('psApp', []);
 
-myApp.controller('sls', function($scope, $http) {
+myApp.controller('measurement', function($scope, $http) {
 
     $scope.mplist = [];
     $scope.full_mplist = [];
