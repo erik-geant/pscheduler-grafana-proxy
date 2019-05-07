@@ -153,7 +153,7 @@ myApp.controller('sls', function($scope, $http) {
         console.log(JSON.stringify(ppp));
      }
 
-    $scope.show_measurement_button = function() {
+    $scope.enable_measurement_button = function() {
         if (!$scope.source || !$scope.destination) {
             return false;
         }
