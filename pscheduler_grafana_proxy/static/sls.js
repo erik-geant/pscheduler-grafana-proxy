@@ -92,5 +92,20 @@ myApp.controller('sls', function($scope, $http) {
         )
     }
 
+    $scope.show_latency_parameters = function() {
+        return ['owamp', 'owping', 'twamp', 'twping'].includes($scope.tool)
+    }
+
+    $scope.show_throughput_parameters = function() {
+        return ['iperf2', 'iperf3'].includes($scope.tool)
+    }
+
+    $scope.start_measurement = function() {
+        console.log('hahaha');
+    }
+
+    $scope.show_measurement_button = function() {
+        return true;
+    }
 
 });

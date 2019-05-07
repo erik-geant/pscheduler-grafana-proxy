@@ -79,7 +79,9 @@
             </ol>
         </fieldset>
 
-        <fieldset id="latency-params">
+        <fieldset
+                id="latency-params"
+                ng-show="show_latency_parameters()">
             <legend>Latency Test Parameters</legend>
             <ol>
                 <li>
@@ -92,8 +94,10 @@
             </ol>
         </fieldset>
 
-        <fieldset>
-            <legend>Througput Test Paremeters</legend>
+        <fieldset
+                id="througput parameters"
+                ng-show="show_througput_parameters()">
+            <legend>Througput Test Parameters</legend>
             <ol>
                 <li>
                     <label for="test-duration">Duration</label>
@@ -111,6 +115,11 @@
                 </li>
             </ol>
         </fieldset>
+
+        <button
+                ng-click="start_measurement()"
+                ng-click="show_measurement_button()">Start Measurement</button>
+
     </div>
   </body>
 </html>
