@@ -158,6 +158,9 @@ myApp.controller('measurement', function($scope, $http) {
             params: test_params
         }
 
+
+        console.log(JSON.stringify(payload));
+
         $scope.tool = "";
         $scope.source = "";
         $scope.destination = "";
@@ -175,8 +178,6 @@ myApp.controller('measurement', function($scope, $http) {
                 $scope.status_message = "error launching measurement";
             }
         );
-
-        console.log(JSON.stringify(ppp));
      }
 
     $scope.enable_measurement_button = function() {
