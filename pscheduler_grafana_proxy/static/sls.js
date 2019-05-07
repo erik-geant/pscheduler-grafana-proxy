@@ -93,19 +93,28 @@ myApp.controller('sls', function($scope, $http) {
     }
 
     $scope.show_latency_parameters = function() {
-        return ['owamp', 'owping', 'twamp', 'twping'].includes($scope.tool)
+        return ['owamp', 'owping', 'twamp', 'twping'].includes($scope.tool);
     }
 
     $scope.show_throughput_parameters = function() {
-        return ['iperf2', 'iperf3'].includes($scope.tool)
+        return ['iperf2', 'iperf3'].includes($scope.tool);
     }
 
     $scope.start_measurement = function() {
+
         console.log('hahaha');
     }
 
     $scope.show_measurement_button = function() {
-        return true;
+        if (!$scope.source || !$scope.destination) {
+            return false;
+        }
+        // all other options are managed select lists,
+        // so individual params can't be empty or invalid
+
+        var is_latency = $scope.show_latency_parameters();
+        var is_throughput = $scope.show_throughput_parameters();
+        return (is_latency || is_throughput)
     }
 
 });
