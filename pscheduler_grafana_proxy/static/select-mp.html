@@ -8,16 +8,50 @@
   <body>
 
     <div ng-controller="sls">
-        Tools:
-        <select
-            ng-options="t for t in tools"
-            ng-change="update_filter()"
-            ng-model="tool"></select>
-        Communities:
-        <select
-            ng-options="c for c in communities"
-            ng-change="update_filter()"
-            ng-model="community"></select>
+        <fieldset>
+            <legend>Schedule</legend>
+            <ol>
+                <li>
+                    <label for="schedule-repeat">Repeat</label>
+                    <select
+                        id="schedule-repeat"
+                        ng-options="t for t in schedule_repeat_options"
+                        ng-model="schedule_repeat"></select>
+                </li>
+                <li>
+                    <label for="schedule-slip">Slip</label>
+                    <select
+                        id="schedule-slip"
+                        ng-options="t for t in schedule_slip_options"
+                        ng-model="schedule_slip"></select>
+                </li>
+                <li>
+                    <label for="schedule-until">Duration</label>
+                    <select
+                        id="schedule-until"
+                        ng-options="t for t in schedule_until_options"
+                        ng-model="schedule_until"></select>
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset>
+            <legend>Test Participants</legend>
+            <ol>
+                <li>
+                    <label for="tool-filter">Tools</label>
+                    <select
+                        id="tool-filter"
+                        ng-options="t for t in tools"
+                        ng-change="update_filter()"
+                        ng-model="tool"></select>
+                </li>
+                <li>
+                    <label for="community-filter">Communities</label>
+                    <select
+                        id="community-filter"
+                        ng-options="c for c in communities"
+                        ng-change="update_filter()"
+                        ng-model="community"></select>
         <!--table>
             <th colspan="3">Measurement Points</th>
             <tr ng-repeat="mp in mplist" ng-show="mp.show">
@@ -27,14 +61,59 @@
                 <td>{{ mp.tools }}</td>
             </tr>
         </table-->
-        <br>
-        Source: <select
-            ng-options="mp as mp.hostname + '|' + mp.name for mp in mplist|filter:{show:true}"
-            ng-model="source"></select>
-        <br>
-        Destination: <select
-            ng-options="mp as mp.hostname + '|' + mp.name for mp in mplist|filter:{show:true}"
-            ng-model="destination"></select>
+                </li>
+                <li>
+                    <label for="select-source">Source</label>
+                    <select
+                        id="select-source"
+                        ng-options="mp as mp.hostname + '|' + mp.name for mp in mplist|filter:{show:true}"
+                        ng-model="source"></select>
+                </li>
+                <li>
+                    <label for="select-destination">Destination</label>
+                    <select
+                        id="select-destination"
+                        ng-options="mp as mp.hostname + '|' + mp.name for mp in mplist|filter:{show:true}"
+                        ng-model="destination"></select>
+                </li>
+            </ol>
+        </fieldset>
+
+        <fieldset id="latency-params">
+            <legend>Latency Test Parameters</legend>
+            <ol>
+                <li>
+                    <label for="packet-count">Packet Count</label>
+                    <select
+                        id="packet-count"
+                        ng-options="c for c in packet_count_options"
+                        ng-model="packet_count"></select>
+                </li>
+            </ol>
+        </fieldset>
+
+        <fieldset>
+            <legend>Througput Test Paremeters</legend>
+            <ol>
+                <li>
+                    <label for="test-duration">Duration</label>
+                    <select
+                        id="test-duration"
+                        ng-options="c for c in duration_options"
+                        ng-model="duration"></select>
+                </li>
+                <li>
+                    <label for="test-interval">Interval</label>
+                    <select
+                        id="test-interval"
+                        ng-options="c for c in interval_options"
+                        ng-model="interval"></select>
+                </li>
+            </ol>
+        </fieldset>
+    </div>
+
+
     </div>
   </body>
 </html>
