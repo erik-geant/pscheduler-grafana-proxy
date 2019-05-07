@@ -100,10 +100,58 @@ myApp.controller('sls', function($scope, $http) {
         return ['iperf2', 'iperf3'].includes($scope.tool);
     }
 
-    $scope.start_measurement = function() {
+    function build_test_params() {
+             var until = new Date();
+        if ($scope.schedule_until == "10m") {
+            until.setMinutes(until.getMinutes() + 10);
+        } else if ($scope.schedule_until == "1h") {
+            until.setHours(until.getHours() + 1);
+        } else if ($scope.schedule_until == "1d") {
+            until.setDate(until.getDate() + 1);
+        } else {
+            console.error("unhandled schedule value"
+                + $scope.schedule_until + ", assuming 1h");
+            until.setHours(until.getHours() + 1);
+        }
 
-        console.log('hahaha');
+        var params = {
+            schema: 1,
+            schedule: {
+                repeat: $scope.schedule_repeat,
+                slip: $scope.schedule_slip,
+                until: until.toISOString()
+            },
+            test: {
+                type: '',
+                spec: {
+                    schema: 1,
+                    source: $scope.source.hostname,
+                    dest: $scope.destination.hostname
+                }
+            }
+        };
+
+        if ($scope.show_throughput_parameters()) {
+            params.test.type = 'throughput';
+            params.test.spec.interval = $scope.interval;
+            params.test.spec.duration = $scope.duration;
+        }
+        else if ($scope.show_latency_parameters()) {
+            params.test.type = 'latency';
+            params.test.spec['output-raw'] = true;
+            params.test.spec['packet-count'] = $scope.packet_count;
+        }
+        else {
+            console.error('unhandled test tool: ' + $scope.tool);
+            return null;
+        }
+        return params;
     }
+
+    $scope.start_measurement = function() {
+        var ppp = build_test_params();
+        console.log(JSON.stringify(ppp));
+     }
 
     $scope.show_measurement_button = function() {
         if (!$scope.source || !$scope.destination) {
