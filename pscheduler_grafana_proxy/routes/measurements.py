@@ -1,23 +1,20 @@
 import logging
 import time
-import jsonschema
 
 from flask import Blueprint, current_app, request
+import jsonschema
+import requests
 
 from pscheduler_grafana_proxy import sls
 from pscheduler_grafana_proxy.routes import common
 
 api = Blueprint("measurement-routes", __name__)
+logger = logging.getLogger(__name__)
 
 EXPECTED_TEST_PARAMS_SCHEMA = {
     '$schema': 'http://json-schema.org/draft-07/schema#',
-    'type': 'object',
-    'properties': {
-        'schema': {
-            'type': 'integer',
-            'minimum': 1,
-            'maximum': 1
-        },
+
+    "definitions": {
         'schedule': {
             'type': 'object',
             'properties': {
@@ -28,37 +25,58 @@ EXPECTED_TEST_PARAMS_SCHEMA = {
             'required': ['repeat', 'until', 'slip'],
             'additionalProperties': False
         },
-        'test': {
+        'test-spec': {
+            'type': 'object',
+            'properties': {
+                'schema': {
+                    'type': 'integer',
+                    'minimum': 1,
+                    'maximum': 1
+                },
+                'source': {'type': 'string'},
+                'dest': {'type': 'string'},
+                'output-raw': {'type': 'boolean'},
+                'packet-count': {'type': 'integer'},
+                'interval': {'type': 'string'},
+                'duration': {'type': 'string'}
+            },
+            'required': ['schema', 'source', 'dest'],
+            'additionalProperties': True
+        },
+        'test-def': {
             'type': 'object',
             'properties': {
                 'type': {
                     'type': 'string',
                     'enum': ['throughput', 'latency']
                 },
-                'spec': {
-                    'type': 'object',
-                    'properties': {
-                        'schema': {
-                            'type': 'integer',
-                            'minimum': 1,
-                            'maximum': 1
-                        },
-                        'source': {'type': 'string'},
-                        'dest': {'type': 'string'},
-                        'output-raw': {'type': 'boolean'},
-                        'packet-count': {'type': 'integer'},
-                        'interval': {'type': 'string'},
-                        'duration': {'type': 'string'}
-                    },
-                    'required': ['schema', 'source', 'dest'],
-                    'additionalProperties': True
-                },
+                'spec': {'$ref': '#/definitions/test-spec'},
             },
             'required': ['type', 'spec'],
             'additionalProperties': False
+        },
+        'test-params': {
+            'type': 'object',
+            'properties': {
+                'schema': {
+                    'type': 'integer',
+                    'minimum': 1,
+                    'maximum': 1
+                },
+                'schedule': {'$ref': '#/definitions/schedule'},
+                'test': {'$ref': '#/definitions/test-def'}
+            },
+            'required': ['schema', 'schedule', 'test'],
+            'additionalProperties': False
         }
     },
-    'required': ['schema', 'schedule', 'test'],
+
+    'type': 'object',
+    'properties': {
+        'mp': {'type': 'string'},
+        'params': {'$ref': '#/definitions/test-params'}
+    },
+    'required': ['mp', 'params'],
     'additionalProperties': False
 }
 
@@ -67,4 +85,18 @@ EXPECTED_TEST_PARAMS_SCHEMA = {
 def run_measurement():
     request_payload = request.get_json()
     jsonschema.validate(request_payload, EXPECTED_TEST_PARAMS_SCHEMA)
-    return 'OK'
+
+    mp_url = 'https://%s/pscheduler/tasks' % request_payload['mp']
+    logger.debug("mp url: '%s'" % mp_url)
+    logger.debug("request data: %r" % request_payload['params'])
+    rsp = requests.post(
+        mp_url,
+        verify=False,
+        json=request_payload['params'])
+
+    if rsp.status_code != 200:
+        print(rsp)
+        assert False
+    assert rsp.status_code == 200
+    logger.debug("task created: %s" % rsp.text)
+    return rsp.text.rstrip().replace('"', '')

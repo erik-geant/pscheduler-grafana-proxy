@@ -152,7 +152,11 @@ myApp.controller('measurement', function($scope, $http) {
 
     $scope.start_measurement = function() {
 
-        var params = build_test_params();
+        var test_params = build_test_params();
+        var payload = {
+            mp: test_params.test.spec.source,
+            params: test_params
+        }
 
         $scope.tool = "";
         $scope.source = "";
@@ -162,7 +166,7 @@ myApp.controller('measurement', function($scope, $http) {
         $http({
             method: 'POST',
             url: window.location.origin + "/measurements/run",
-            data: params
+            data: payload
         }).then(
             function(rsp) {
                 $scope.status_message = "launched new measurement: " + rsp.data;
