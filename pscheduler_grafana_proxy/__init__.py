@@ -55,6 +55,9 @@ def create_app():
     from pscheduler_grafana_proxy.routes import sls
     app.register_blueprint(sls.api, url_prefix='/sls')
 
+    from pscheduler_grafana_proxy.routes import measurements
+    app.register_blueprint(measurements.api, url_prefix='/measurements')
+
     logging.debug(app.config)
 
     return app
