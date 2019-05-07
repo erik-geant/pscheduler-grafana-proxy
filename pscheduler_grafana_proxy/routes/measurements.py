@@ -95,8 +95,8 @@ def run_measurement():
         json=request_payload['params'])
 
     if rsp.status_code != 200:
-        print(rsp)
+        logger.error(rsp)
         assert False
-    assert rsp.status_code == 200
+
     logger.debug("task created: %s" % rsp.text)
     return rsp.text.rstrip().replace('"', '')
