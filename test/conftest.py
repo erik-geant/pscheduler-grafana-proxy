@@ -1,3 +1,4 @@
+import json
 import os
 import tempfile
 
@@ -8,24 +9,29 @@ import pscheduler_grafana_proxy
 
 
 @pytest.fixture
-def app_config():
+def flask_config():
     with tempfile.TemporaryDirectory() as dir_name:
-        settings_filename = os.path.join(dir_name, "settings.config")
-        with open(settings_filename, "w") as f:
-            f.write("SLS_BOOTSTRAP_URL = "
-                    "'http://ps-west.es.net:8096/lookup/activehosts.json'\n")
-            f.write("SLS_CACHE_FILENAME = '%s'\n" %
-                    os.path.join(dir_name, "test-sls-cache.json"))
+        app_params = {
+            'sls bootstrap url': 'http://ps-west.es.net:8096/lookup/activehosts.json',
+            'redis': {
+                'hostname': 'test-dashboard-storage01.geant.org'
+            }
+        }
 
-            # f.write("STARTUP_REFRESH_SLS_CACHE = True\n")
-            f.write("STARTUP_REFRESH_SLS_CACHE = False\n")
-            f.write("PSCHEDULER_TASK_POLLING_INTERVAL_SECONDS = 0\n")
-        yield settings_filename
+        app_config_filename = os.path.join(dir_name, 'config.json')
+        with open(app_config_filename, 'w') as f:
+            f.write(json.dumps(app_params))
+
+        flask_config_filename = os.path.join(dir_name, 'flask.config')
+        with open(flask_config_filename, 'w') as f:
+            f.write('CONFIG_JSON_FILENAME = "%s"' % app_config_filename)
+
+        yield flask_config_filename
 
 
 @pytest.fixture
-def client(app_config):
-    os.environ["SETTINGS_FILENAME"] = app_config
+def client(flask_config):
+    os.environ['FLASK_SETTINGS_FILENAME'] = flask_config
     return pscheduler_grafana_proxy.create_app().test_client()
 
 
@@ -33,13 +39,13 @@ def _mock_responses(response_data):
 
     for rsp in response_data:
 
-        for data_filename in rsp["data_filenames"]:
+        for data_filename in rsp['data_filenames']:
             with open(data_filename) as f:
                 body = f.read()
 
             responses.add(
-                rsp["method"],
-                rsp["url"],
+                rsp['method'],
+                rsp['url'],
                 body=body,
                 match_querystring=False)
 
@@ -47,39 +53,40 @@ def _mock_responses(response_data):
 @pytest.fixture
 def mocked_latency_test_data():
 
-    data_path = os.path.join(os.path.dirname(__file__), "latency")
+    data_path = os.path.join(os.path.dirname(__file__), 'latency')
 
-    SOURCE = "perfsonar-nas.asnet.am"
-    DESTINATION = "perfsonar-probe.ripe.net"
+    SOURCE = 'perfsonar-nas.asnet.am'
+    DESTINATION = 'perfsonar-probe.ripe.net'
 
     RESPONSE_DATA = [
         {
-            "url": "https://perfsonar-nas.asnet.am/pscheduler/tasks",
-            "method": responses.POST,
-            "data_filenames": [
-                os.path.join(data_path, "task-init-response.txt")]
+            'aaa': data_path,
+            'url': 'https://perfsonar-nas.asnet.am/pscheduler/tasks',
+            'method': responses.POST,
+            'data_filenames': [
+                os.path.join(data_path, 'task-init-response.txt')]
         },
         {
-            "url": "https://perfsonar-nas.asnet.am/"
-                   "pscheduler/tasks/"
-                   "6f86acbf-ee3b-497d-857b-6c7975f1ac00/runs/first",
-            "method": responses.GET,
-            "data_filenames": [
-                os.path.join(data_path, "task-0.json"),
-                os.path.join(data_path, "task-1.json"),
-                os.path.join(data_path, "task-2.json"),
-                os.path.join(data_path, "task-3.json"),
-                os.path.join(data_path, "task-4.json"),
-                os.path.join(data_path, "task-5.json"),
-                os.path.join(data_path, "task-6.json"),
-                os.path.join(data_path, "task-7.json"),
-                os.path.join(data_path, "task-8.json"),
-                os.path.join(data_path, "task-9.json"),
-                os.path.join(data_path, "task-10.json"),
-                os.path.join(data_path, "task-11.json"),
-                os.path.join(data_path, "task-12.json"),
-                os.path.join(data_path, "task-13.json"),
-                os.path.join(data_path, "task-14.json")
+            'url': 'https://perfsonar-nas.asnet.am/'
+                   'pscheduler/tasks/'
+                   '6f86acbf-ee3b-497d-857b-6c7975f1ac00/runs/first',
+            'method': responses.GET,
+            'data_filenames': [
+                os.path.join(data_path, 'task-0.json'),
+                os.path.join(data_path, 'task-1.json'),
+                os.path.join(data_path, 'task-2.json'),
+                os.path.join(data_path, 'task-3.json'),
+                os.path.join(data_path, 'task-4.json'),
+                os.path.join(data_path, 'task-5.json'),
+                os.path.join(data_path, 'task-6.json'),
+                os.path.join(data_path, 'task-7.json'),
+                os.path.join(data_path, 'task-8.json'),
+                os.path.join(data_path, 'task-9.json'),
+                os.path.join(data_path, 'task-10.json'),
+                os.path.join(data_path, 'task-11.json'),
+                os.path.join(data_path, 'task-12.json'),
+                os.path.join(data_path, 'task-13.json'),
+                os.path.join(data_path, 'task-14.json')
             ]
         }
     ]
@@ -87,40 +94,40 @@ def mocked_latency_test_data():
     _mock_responses(RESPONSE_DATA)
 
     return {
-        "source": SOURCE,
-        "destination": DESTINATION
+        'source': SOURCE,
+        'destination': DESTINATION
     }
 
 
 @pytest.fixture
 def mocked_throughput_test_data():
 
-    data_path = os.path.join(os.path.dirname(__file__), "throughput")
+    data_path = os.path.join(os.path.dirname(__file__), 'throughput')
 
-    SOURCE = "psmall-b-3.basnet.by"
-    DESTINATION = "psmall-b-2.basnet.by"
+    SOURCE = 'psmall-b-3.basnet.by'
+    DESTINATION = 'psmall-b-2.basnet.by'
 
     RESPONSE_DATA = [
         {
-            "url": "https://psmall-b-3.basnet.by/pscheduler/tasks",
-            "method": responses.POST,
-            "data_filenames": [
-                os.path.join(data_path, "task-init-response.txt")]
+            'url': 'https://psmall-b-3.basnet.by/pscheduler/tasks',
+            'method': responses.POST,
+            'data_filenames': [
+                os.path.join(data_path, 'task-init-response.txt')]
         },
         {
-            "url": "https://psmall-b-3.basnet.by/pscheduler/tasks/"
-                   "6e109b71-b6f2-4721-adef-9c47aeca2e30/runs/first",
-            "method": responses.GET,
-            "data_filenames": [
-                os.path.join(data_path, "task-0.json"),
-                os.path.join(data_path, "task-1.json"),
-                os.path.join(data_path, "task-2.json"),
-                os.path.join(data_path, "task-3.json"),
-                os.path.join(data_path, "task-4.json"),
-                os.path.join(data_path, "task-5.json"),
-                os.path.join(data_path, "task-6.json"),
-                os.path.join(data_path, "task-7.json"),
-                os.path.join(data_path, "task-8.json")
+            'url': 'https://psmall-b-3.basnet.by/pscheduler/tasks/'
+                   '6e109b71-b6f2-4721-adef-9c47aeca2e30/runs/first',
+            'method': responses.GET,
+            'data_filenames': [
+                os.path.join(data_path, 'task-0.json'),
+                os.path.join(data_path, 'task-1.json'),
+                os.path.join(data_path, 'task-2.json'),
+                os.path.join(data_path, 'task-3.json'),
+                os.path.join(data_path, 'task-4.json'),
+                os.path.join(data_path, 'task-5.json'),
+                os.path.join(data_path, 'task-6.json'),
+                os.path.join(data_path, 'task-7.json'),
+                os.path.join(data_path, 'task-8.json')
             ]
         }
     ]
@@ -128,17 +135,17 @@ def mocked_throughput_test_data():
     _mock_responses(RESPONSE_DATA)
 
     return {
-        "source": SOURCE,
-        "destination": DESTINATION
+        'source': SOURCE,
+        'destination': DESTINATION
     }
 
 
 @pytest.fixture
 def mocked_sls_test_data():
 
-    data_path = os.path.join(os.path.dirname(__file__), "sls")
+    data_path = os.path.join(os.path.dirname(__file__), 'sls')
 
-    BOOTSTRAP_URL = "http://ps-west.es.net:8096/lookup/activehosts.json"
+    BOOTSTRAP_URL = 'http://ps-west.es.net:8096/lookup/activehosts.json'
 
     # test data
     # data files are in the test/sls directory
@@ -160,19 +167,19 @@ def mocked_sls_test_data():
     for url, filename in SLS_DATA.items():
 
         RESPONSE_DATA.append({
-            "url": url,
-            "method": responses.GET,
-            "data_filenames": [os.path.join(data_path, filename)]
+            'url': url,
+            'method': responses.GET,
+            'data_filenames': [os.path.join(data_path, filename)]
         })
 
         RESPONSE_DATA.append({
-            "url": url + "/",
-            "method": responses.GET,
-            "data_filenames": [os.path.join(data_path, filename)]
+            'url': url + '/',
+            'method': responses.GET,
+            'data_filenames': [os.path.join(data_path, filename)]
         })
 
     _mock_responses(RESPONSE_DATA)
 
     return {
-        "bootstrap_url": BOOTSTRAP_URL
+        'bootstrap_url': BOOTSTRAP_URL
     }
