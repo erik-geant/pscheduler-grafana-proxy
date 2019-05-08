@@ -25,45 +25,6 @@ MP_RESPONSE_SCHEMA = {
 }
 
 
-# def mock_sls_responses():
-#
-#     data_path = os.path.join(os.path.dirname(__file__), "sls")
-#     for url, filename in RESPONSE_DATA.items():
-#
-#         with open(os.path.join(data_path, filename)) as f:
-#             body = f.read()
-#
-#         responses.add(
-#             responses.GET,
-#             url,
-#             body=body,
-#             content_type="application/json",
-#             match_querystring=False)
-#
-#         responses.add(
-#             responses.GET,
-#             url + "/",
-#             body=body,
-#             content_type="application/json",
-#             match_querystring=False)
-
-
-# def get_settings(dirname, bootstrap_url):
-#     import pscheduler_grafana_proxy
-#     default_settings_filename = os.path.join(
-#         pscheduler_grafana_proxy.__path__[0],
-#         "default_settings.py")
-#     with open(default_settings_filename) as f:
-#         contents = f.read()
-#     g = {}
-#     settings = {}
-#     exec(contents, g, settings)
-#
-#     settings["SLS_CACHE_FILENAME"] = os.path.join(dirname, "sls-cache.json")
-#     settings["SLS_BOOTSTRAP_URL"] = bootstrap_url
-#     return settings
-
-
 @responses.activate
 def test_sls_mps(mocked_sls, mocked_redis):
     sls.update_cached_mps(mocked_sls, mocked_redis)
