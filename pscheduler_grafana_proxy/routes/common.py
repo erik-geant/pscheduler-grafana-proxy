@@ -6,6 +6,7 @@ import redis
 
 logger = logging.getLogger(__name__)
 
+
 def get_redis():
     if 'redis_db' not in g:
         config = current_app.config['CONFIG_PARAMS']

@@ -1,12 +1,12 @@
 import logging
-import time
 
-from flask import Blueprint, current_app, jsonify, Response
+from flask import Blueprint, current_app, jsonify
 
 from pscheduler_grafana_proxy import sls
 from pscheduler_grafana_proxy.routes import common
 
 api = Blueprint("sls-routes", __name__)
+logger = logging.getLogger(__name__)
 
 
 @api.route("/refresh")

@@ -4,6 +4,8 @@ import re
 import requests
 from requests_futures.sessions import FuturesSession
 
+logger = logging.getLogger(__name__)
+
 
 def load_sls_hosts(bootstrap_url):
     rsp = requests.get(
@@ -33,13 +35,13 @@ def load_services(bootstrap_url):
         try:
             rsp = job.result()
         except requests.ConnectionError as e:
-            logging.error(str(e))
+            logger.error(str(e))
             continue
 
         if rsp.status_code == 200:
             all_responses[url] = rsp.json()
         else:
-            logging.error(
+            logger.error(
                 "'%s' returned status code %d" % (url, rsp.status_code))
             all_responses[url] = []
     return all_responses
@@ -57,6 +59,7 @@ def load_services(bootstrap_url):
 
 def update_cached_mps(bootstrap_url, r):
     r.set('pscheduler:sls', json.dumps(load_services(bootstrap_url)))
+
 
 def fetch_sls_cache(r):
     return json.loads(r.get('pscheduler:sls').decode('utf-8'))
@@ -107,7 +110,7 @@ if __name__ == "__main__":
     REDIS_HOSTNAME = 'test-dashboard-storage01.geant.org'
     REDIS_PORT = 6379
     r = redis.StrictRedis(REDIS_HOSTNAME, REDIS_PORT)
-    logging.basicConfig(level=logging.DEBUG)
+    logger.basicConfig(level=logging.DEBUG)
     update_cached_mps(SLS_BOOTSTRAP_URL, r)
     mps = load_mps(r)
-    logging.info(list(mps))
+    logger.info(list(mps))

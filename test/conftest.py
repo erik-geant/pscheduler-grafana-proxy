@@ -9,7 +9,6 @@ import responses
 import pscheduler_grafana_proxy
 
 
-
 @pytest.fixture
 def mocked_sls():
 
@@ -106,8 +105,6 @@ def mocked_redis(mocker):
         'pscheduler_grafana_proxy.routes.common.redis.StrictRedis',
         MockedRedis)
     return MockedRedis()
-
-
 
 
 @pytest.fixture

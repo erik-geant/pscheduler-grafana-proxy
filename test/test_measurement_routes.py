@@ -3,10 +3,11 @@ import json
 import responses
 import pytest
 
+
 @responses.activate
 @pytest.mark.parametrize('measurement_params', [
-    {"schema":1,"schedule":{"repeat":"PT5M","slip":"PT5M","until":"2019-05-07T20:02:13.144Z"},"test":{"type":"latency","spec":{"schema":1,"source":"nlg-perfsonar-1.northernlights.gigapop.net","dest":"infotech-sv-62.ggnet.umn.edu","output-raw":True,"packet-count":10}}},
-    {"schema":1,"schedule":{"repeat":"PT5M","slip":"PT5M","until":"2019-05-07T20:06:59.018Z"},"test":{"type":"throughput","spec":{"schema":1,"source":"89.188.60.70","dest":"37.26.173.34","interval":"PT5S","duration":"PT30S"}}}
+    {"schema":1,"schedule":{"repeat":"PT5M","slip":"PT5M","until":"2019-05-07T20:02:13.144Z"},"test":{"type":"latency","spec":{"schema":1,"source":"nlg-perfsonar-1.northernlights.gigapop.net","dest":"infotech-sv-62.ggnet.umn.edu","output-raw":True,"packet-count":10}}},  # noqa: E501, E231
+    {"schema":1,"schedule":{"repeat":"PT5M","slip":"PT5M","until":"2019-05-07T20:06:59.018Z"},"test":{"type":"throughput","spec":{"schema":1,"source":"89.188.60.70","dest":"37.26.173.34","interval":"PT5S","duration":"PT30S"}}}  # noqa: E501, E231
 ])
 def test_latency_delays_http(client, measurement_params):
 

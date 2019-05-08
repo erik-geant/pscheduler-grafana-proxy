@@ -1,12 +1,8 @@
 import logging
-import time
 
-from flask import Blueprint, current_app, request
+from flask import Blueprint, request
 import jsonschema
 import requests
-
-from pscheduler_grafana_proxy import sls
-from pscheduler_grafana_proxy.routes import common
 
 api = Blueprint("measurement-routes", __name__)
 logger = logging.getLogger(__name__)
