@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pscheduler_grafana_proxy",
-    version="0.1",
+    version="0.2",
     author="GEANT",
     author_email="swd@geant.org",
     description="wrapper for pscheduler i/o",

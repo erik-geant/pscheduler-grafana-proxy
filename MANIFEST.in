@@ -1,2 +1,1 @@
-recursive-include pscheduler_data_helper/static *
-recursive-include pscheduler_data_helper/templates *.j2
+recursive-include pscheduler_grafana_proxy/static *
