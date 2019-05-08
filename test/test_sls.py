@@ -25,75 +25,21 @@ MP_RESPONSE_SCHEMA = {
 }
 
 
-# def mock_sls_responses():
-#
-#     data_path = os.path.join(os.path.dirname(__file__), "sls")
-#     for url, filename in RESPONSE_DATA.items():
-#
-#         with open(os.path.join(data_path, filename)) as f:
-#             body = f.read()
-#
-#         responses.add(
-#             responses.GET,
-#             url,
-#             body=body,
-#             content_type="application/json",
-#             match_querystring=False)
-#
-#         responses.add(
-#             responses.GET,
-#             url + "/",
-#             body=body,
-#             content_type="application/json",
-#             match_querystring=False)
-
-
-def get_settings(dirname, bootstrap_url):
-    import pscheduler_grafana_proxy
-    default_settings_filename = os.path.join(
-        pscheduler_grafana_proxy.__path__[0],
-        "default_settings.py")
-    with open(default_settings_filename) as f:
-        contents = f.read()
-    g = {}
-    settings = {}
-    exec(contents, g, settings)
-
-    settings["SLS_CACHE_FILENAME"] = os.path.join(dirname, "sls-cache.json")
-    settings["SLS_BOOTSTRAP_URL"] = bootstrap_url
-    return settings
+@responses.activate
+def test_sls_mps(mocked_sls, mocked_redis):
+    sls.update_cached_mps(mocked_sls, mocked_redis)
+    mps = sls.load_mps(mocked_redis)
+    validate(list(mps), MP_RESPONSE_SCHEMA)
 
 
 @responses.activate
-def test_sls_mps(mocked_sls_test_data):
-
+def test_throughput_http(client):
     # mock_sls_responses()
-
-    with tempfile.TemporaryDirectory() as tmpdir:
-
-        settings = get_settings(tmpdir, mocked_sls_test_data["bootstrap_url"])
-
-        sls.update_cached_mps(
-            settings["SLS_BOOTSTRAP_URL"],
-            settings["SLS_CACHE_FILENAME"])
-
-        mps = sls.load_mps("owping", settings["SLS_CACHE_FILENAME"])
-        validate(list(mps), MP_RESPONSE_SCHEMA)
-
-
-@responses.activate
-def test_throughput_http(client, mocked_sls_test_data):
-    # mock_sls_responses()
-    rv = client.get(
-        "/mplist/refresh",
-        # headers=api_request_headers
-    )
+    rv = client.get('/sls/refresh')
     assert rv.status_code == 200
 
-    rv = client.get(
-        "/mplist/owping",
-        # headers=api_request_headers
-    )
+    rv = client.get('/sls/mplist')
+    assert rv.status_code == 200
 
     validate(json.loads(rv.data.decode("utf-8")), MP_RESPONSE_SCHEMA)
 
@@ -207,6 +153,6 @@ def test_hostname_from_url(url, expected_hostname):
     assert sls.hostname_from_url(url) == expected_hostname
 
 
-if __name__ == "__main__":
-    # this is only for profiling
-    test_sls_mps()
+# if __name__ == "__main__":
+#     # this is only for profiling
+#     test_sls_mps()
