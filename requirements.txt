@@ -4,7 +4,9 @@ requests
 requests-futures
 jsonschema
 responses
+redis
+
 pytest
 pytest-cov
+pytest-mock
 flake8
-nu-gitflow
