@@ -1,7 +1,5 @@
 import json
 import logging
-import os
-import tempfile
 import responses
 from jsonschema import validate
 import pytest

@@ -11,8 +11,9 @@ from pscheduler_grafana_proxy import config
 
 def create_app():
     """
-    overrides settings from the filename defined in env var
-    SETTINGS_FILENAME
+    initializes app from the file named by
+    CONFIG_JSON_FILENAME in the file named
+    by the environment variable FLASK_SETTINGS_FILENAME
     :return: a new flask app instance
     """
 
@@ -41,16 +42,8 @@ def create_app():
 
     CORS(app)
 
-    # from pscheduler_grafana_proxy import sls
-    # from pscheduler_grafana_proxy import simple
-    # from pscheduler_grafana_proxy import long_polling
-    # from pscheduler_grafana_proxy import json_proxy
-    # from pscheduler_grafana_proxy import example_routes
-    #
-    # app.register_blueprint(simple.api)
-    # app.register_blueprint(long_polling.api)
-    # app.register_blueprint(example_routes.examples)
-    # app.register_blueprint(json_proxy.api, url_prefix='/json-proxy')
+    from pscheduler_grafana_proxy.routes import default
+    app.register_blueprint(default.api)
 
     from pscheduler_grafana_proxy.routes import sls
     app.register_blueprint(sls.api, url_prefix='/sls')

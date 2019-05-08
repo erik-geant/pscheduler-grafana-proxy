@@ -34,4 +34,3 @@ def load(f):
     if 'port' not in config['redis']:
         config['redis']['port'] = 6379
     return config
-
