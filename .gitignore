@@ -3,3 +3,12 @@ __pycache__
 .idea
 *.egg-info
 .pytest_cache
+.coverage
+.tox
+coverage.xml
+htmlcov
+
+# testenv data
+pscheduler_grafana_proxy/config.json
+pscheduler_grafana_proxy/flask.config
+
