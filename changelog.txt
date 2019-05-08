@@ -1,11 +1,1 @@
 0.1 initial demo release
-0.2 include sample html/js scripts in release dist
-0.3 set include_package_data
-0.4 added missing manifest
-0.5 handle sls connection errors gracefully
-0.6 link mp selecton to tests with some forms+params
-0.7 added missing templates to release archive
-0.8 improved histogram transitions, code cleanup
-0.9 added test params
-0.10 added json-proxy routes
-0.10 added json-proxy/get route
