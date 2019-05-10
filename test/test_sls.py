@@ -37,7 +37,6 @@ def test_sls_mps(mocked_sls, mocked_redis):
     jsonschema.validate(list(mps), MP_RESPONSE_SCHEMA)
 
 
-
 test_data = [
     [
         "http://200.143.240.132/esmond/perfsonar/archive",
@@ -155,7 +154,8 @@ def test_mplist(client):
     rv = client.get('/sls/mplist')
     assert rv.status_code == 200
 
-    jsonschema.validate(json.loads(rv.data.decode("utf-8")), MP_RESPONSE_SCHEMA)
+    jsonschema.validate(
+        json.loads(rv.data.decode("utf-8")), MP_RESPONSE_SCHEMA)
 
 
 @responses.activate
