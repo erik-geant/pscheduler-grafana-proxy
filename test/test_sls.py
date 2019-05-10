@@ -1,14 +1,14 @@
 import json
 import logging
 import responses
-from jsonschema import validate
+import jsonschema
 import pytest
 from pscheduler_grafana_proxy import sls
 
 logging.basicConfig(level=logging.INFO)
 
 MP_RESPONSE_SCHEMA = {
-    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "minItems": 1,
     "items": {
@@ -19,7 +19,14 @@ MP_RESPONSE_SCHEMA = {
             "domains": {"type": "array", "items": {"type": "string"}}
         },
         "required": ["hostname", "name", "communities"]
-    },
+    }
+}
+
+LIST_OF_STRINGS_SCHEMA = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "minItems": 1,
+    "items": {"type": "string"}
 }
 
 
@@ -27,19 +34,8 @@ MP_RESPONSE_SCHEMA = {
 def test_sls_mps(mocked_sls, mocked_redis):
     sls.update_cached_mps(mocked_sls, mocked_redis)
     mps = sls.load_mps(mocked_redis)
-    validate(list(mps), MP_RESPONSE_SCHEMA)
+    jsonschema.validate(list(mps), MP_RESPONSE_SCHEMA)
 
-
-@responses.activate
-def test_throughput_http(client):
-    # mock_sls_responses()
-    rv = client.get('/sls/refresh')
-    assert rv.status_code == 200
-
-    rv = client.get('/sls/mplist')
-    assert rv.status_code == 200
-
-    validate(json.loads(rv.data.decode("utf-8")), MP_RESPONSE_SCHEMA)
 
 
 test_data = [
@@ -151,6 +147,44 @@ def test_hostname_from_url(url, expected_hostname):
     assert sls.hostname_from_url(url) == expected_hostname
 
 
-# if __name__ == "__main__":
-#     # this is only for profiling
-#     test_sls_mps()
+@responses.activate
+def test_mplist(client):
+    rv = client.get('/sls/refresh')
+    assert rv.status_code == 200
+
+    rv = client.get('/sls/mplist')
+    assert rv.status_code == 200
+
+    jsonschema.validate(json.loads(rv.data.decode("utf-8")), MP_RESPONSE_SCHEMA)
+
+
+@responses.activate
+def test_mptools(client):
+    rv = client.get('/sls/refresh')
+    assert rv.status_code == 200
+
+    rv = client.get('/sls/mptools')
+    assert rv.status_code == 200
+
+    rsp = json.loads(rv.data.decode("utf-8"))
+    jsonschema.validate(rsp, LIST_OF_STRINGS_SCHEMA)
+    assert len(set(rsp)) == len(rsp), 'response contains duplicates'
+
+    for a, b in zip(rsp, sorted(rsp)):
+        assert a == b, 'expected response to be sorted'
+
+
+@responses.activate
+def test_mpcommunities(client):
+    rv = client.get('/sls/refresh')
+    assert rv.status_code == 200
+
+    rv = client.get('/sls/mpcommunities')
+    assert rv.status_code == 200
+
+    rsp = json.loads(rv.data.decode("utf-8"))
+    jsonschema.validate(rsp, LIST_OF_STRINGS_SCHEMA)
+    assert len(set(rsp)) == len(rsp), 'response contains duplicates'
+
+    for a, b in zip(rsp, sorted(rsp)):
+        assert a == b, 'expected response to be sorted'
