@@ -106,6 +106,31 @@ outside the scope of this document.
 
 The following web service resources are provided by this module.
 
+* `/sls/version`
+
+  This resource returns a JSON object containing version
+  information about the currently running module.
+
+  The response will be formatted as follows:
+
+  ```json
+  {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "api": {
+            "type": "string",
+            "pattern": r'\d+\.\d+'
+        },
+        "module": {
+            "type": "string",
+            "pattern": r'\d+\.\d+'
+        }
+    },
+    "required": ["api", "module"],
+    "additionalProperties": False
+  }
+  ```
 
 * `/sls/refresh`
 
