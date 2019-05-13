@@ -185,24 +185,34 @@ def load_data_points(mp, task):
         task_info['schedule']['until'], '%Y-%m-%dT%H:%M:%S.%fZ')
     now = datetime.utcnow()
 
-    def _schedule_is_finished():
+    def _schedule_is_finished(_ignored):
         return now >= until
 
     def _run_is_finished(r):
         return r.get('state', '?').lower() == 'finished'
+
 
     for run_url in _get_url_json(
             runs_url, list_of_strings_schema, save_if=_schedule_is_finished):
 
         run = _get_url_json(run_url, save_if=_run_is_finished)
         if not _run_is_finished(run):
-            break
+            continue
 
         if task_info['test']['type'] == 'latency':
             for p in run['result']['raw-packets']:
                 delta = abs(p['dst-ts'] - p['src-ts'])/T32
                 ts = p['src-ts']/T32 - OWPJAN_1970
                 yield delta, ts
+        elif task_info['test']['type'] == 'throughput':
+            start_time = datetime.strptime(
+                run['start-time'], '%Y-%m-%dT%H:%M:%SZ').timestamp()
+            intervals = run['result-merged']['intervals']
+            for s in [i['summary'] for i in intervals]:
+                mid_ts = (s['start'] + s['end'])/2
+                ts = start_time + mid_ts
+                bytes = s['throughput-bytes']
+                yield bytes, ts
 
 
 @common.require_accepts_json
