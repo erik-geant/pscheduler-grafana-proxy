@@ -17,12 +17,14 @@ def refresh_sls_db():
     return 'OK'
 
 
+@common.require_accepts_json
 @api.route("/mplist")
 def return_full_sls_db():
     mps = sls.load_mps(common.get_redis())
     return jsonify(list(mps))
 
 
+@common.require_accepts_json
 @api.route('/mptools')
 def return_mp_tools():
     tools = set()
@@ -31,6 +33,7 @@ def return_mp_tools():
     return jsonify(sorted(list(tools)))
 
 
+@common.require_accepts_json
 @api.route('/mpcommunities')
 def return_mp_communities():
     communities = set()

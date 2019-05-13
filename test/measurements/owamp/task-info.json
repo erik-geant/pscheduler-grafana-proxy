@@ -1,0 +1,1 @@
+{"test": {"type": "latency", "spec": {"dest": "psmall.lut.ac.uk", "source": "ps02.aco.net", "output-raw": true, "packet-count": 10, "schema": 1}}, "schema": 1, "tool": "owping", "href": "https://ps02.aco.net/pscheduler/tasks/716d02e0-1869-4e86-81a8-8a62507625dd", "schedule": {"repeat": "PT5M", "until": "2019-05-13T12:27:27.255Z", "slip": "PT5M"}}
