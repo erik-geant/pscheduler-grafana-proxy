@@ -8,6 +8,5 @@ install:
     - pip install -r requirements.txt
     - pip install -e .
 script:
-    - py.test --cov-report term --cov perfsonar_data_helper
-#    - py.test --cov-report html:coverage --cov-report term --cov perfsonar_data_helper
-    - flake8 perfsonar_data_helper --statistics
+    - py.test --cov-report term --cov pscheduler_grafana_proxy --fail-under 80
+    - flake8 pscheduler_grafana_proxy --statistics
