@@ -157,7 +157,16 @@ def load_data_points(mp, task):
             "schema": {"type": "integer", "minimum": 1, "maximum": 1},
             "tool": {"type": "string"},
             "href": {"type": "string"},
-            "schedule": {"type": "object"}
+            "schedule": {
+                "type": "object",
+                "properties": {
+                    "repeat": {"type": "string"},
+                    "until": {"type": "string"},
+                    "slip": {"type": "string"}
+                },
+                "required": ["repeat", "until", "slip"],
+                "additionalProperties": False
+            }
         },
         "required": ["test", "schema", "tool", "href", "schedule"],
         "additionalProperties": False
@@ -172,13 +181,21 @@ def load_data_points(mp, task):
         "items": {"type": "string"}
     }
 
-    def _is_finished(r):
+    until =  datetime.strptime(
+        task_info['schedule']['until'], '%Y-%m-%dT%H:%M:%S.%fZ')
+    now = datetime.utcnow()
+
+    def _schedule_is_finished():
+        return now >= until
+
+    def _run_is_finished(r):
         return r.get('state', '?').lower() == 'finished'
 
-    for run_url in _get_url_json(runs_url, list_of_strings_schema):
+    for run_url in _get_url_json(
+            runs_url, list_of_strings_schema, save_if=_schedule_is_finished):
 
-        run = _get_url_json(run_url, save_if=_is_finished)
-        if not _is_finished(run):
+        run = _get_url_json(run_url, save_if=_run_is_finished)
+        if not _run_is_finished(run):
             break
 
         if task_info['test']['type'] == 'latency':
