@@ -49,7 +49,6 @@ def _mock_measurement_responses(dirname):
             run=run_id, **params)
         data[url] = '{run}.json'.format(run=run_id)
 
-
     for url, filename in data.items():
         with open(os.path.join(dirname, filename)) as f:
             body = f.read()
@@ -58,12 +57,13 @@ def _mock_measurement_responses(dirname):
     return params
 
 
+@pytest.mark.parametrize('test_data_dirname', [
+    os.path.join(os.path.dirname(__file__), 'measurements', 'owamp'),
+    os.path.join(os.path.dirname(__file__), 'measurements', 'iperf3')
+])
 @responses.activate
-def test_latency_timeseries(client):
-    test_data_dirname = os.path.join(
-        os.path.dirname(__file__), 'measurements', 'owamp')
+def test_latency_timeseries(client, test_data_dirname):
     params = _mock_measurement_responses(test_data_dirname)
-
     payload = {
         'mp': params['mp'],
         'task': params['task']
