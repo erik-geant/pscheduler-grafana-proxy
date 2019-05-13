@@ -95,7 +95,6 @@ MEASUREMENT_RESULTS__REQUEST_SCHEMA = {
 }
 
 
-
 @api.route('/run', methods=['POST'])
 def run_measurement():
     request_payload = request.get_json()
@@ -181,7 +180,7 @@ def load_data_points(mp, task):
         "items": {"type": "string"}
     }
 
-    until =  datetime.strptime(
+    until = datetime.strptime(
         task_info['schedule']['until'], '%Y-%m-%dT%H:%M:%S.%fZ')
     now = datetime.utcnow()
 
@@ -190,7 +189,6 @@ def load_data_points(mp, task):
 
     def _run_is_finished(r):
         return r.get('state', '?').lower() == 'finished'
-
 
     for run_url in _get_url_json(
             runs_url, list_of_strings_schema, save_if=_schedule_is_finished):
@@ -222,5 +220,3 @@ def get_measurement_timeseries():
     jsonschema.validate(request_payload, MEASUREMENT_RESULTS__REQUEST_SCHEMA)
     data = load_data_points(request_payload['mp'], request_payload['task'])
     return jsonify(list(data))
-
-
