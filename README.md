@@ -194,72 +194,72 @@ The following web service resources are provided by this module.
 
   ```json
   {
-    '$schema': 'http://json-schema.org/draft-07/schema#',
+    "$schema": "http://json-schema.org/draft-07/schema#",
 
     "definitions": {
-        'schedule': {
-            'type': 'object',
-            'properties': {
-                'repeat': {'type': 'string'},
-                'until': {'type': 'string'},
-                'slip': {'type': 'string'}
+        "schedule": {
+            "type": "object",
+            "properties": {
+                "repeat": {"type": "string"},
+                "until": {"type": "string"},
+                "slip": {"type": "string"}
             },
-            'required': ['repeat', 'until', 'slip'],
-            'additionalProperties': False
+            "required": ["repeat", "until", "slip"],
+            "additionalProperties": False
         },
-        'test-spec': {
-            'type': 'object',
-            'properties': {
-                'schema': {
-                    'type': 'integer',
-                    'minimum': 1,
-                    'maximum': 1
+        "test-spec": {
+            "type": "object",
+            "properties": {
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1
                 },
-                'source': {'type': 'string'},
-                'dest': {'type': 'string'},
-                'output-raw': {'type': 'boolean'},
-                'packet-count': {'type': 'integer'},
-                'interval': {'type': 'string'},
-                'duration': {'type': 'string'}
+                "source": {"type": "string"},
+                "dest": {"type": "string"},
+                "output-raw": {"type": "boolean"},
+                "packet-count": {"type": "integer"},
+                "interval": {"type": "string"},
+                "duration": {"type": "string"}
             },
-            'required': ['schema', 'source', 'dest'],
-            'additionalProperties': True
+            "required": ["schema", "source", "dest"],
+            "additionalProperties": True
         },
-        'test-def': {
-            'type': 'object',
-            'properties': {
-                'type': {
-                    'type': 'string',
-                    'enum': ['throughput', 'latency']
+        "test-def": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["throughput", "latency"]
                 },
-                'spec': {'$ref': '#/definitions/test-spec'},
+                "spec": {"$ref": "#/definitions/test-spec"},
             },
-            'required': ['type', 'spec'],
-            'additionalProperties': False
+            "required": ["type", "spec"],
+            "additionalProperties": False
         },
-        'test-params': {
-            'type': 'object',
-            'properties': {
-                'schema': {
-                    'type': 'integer',
-                    'minimum': 1,
-                    'maximum': 1
+        "test-params": {
+            "type": "object",
+            "properties": {
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1
                 },
-                'schedule': {'$ref': '#/definitions/schedule'},
-                'test': {'$ref': '#/definitions/test-def'}
+                "schedule": {"$ref": "#/definitions/schedule"},
+                "test": {"$ref": "#/definitions/test-def"}
             },
-            'required': ['schema', 'schedule', 'test'],
-            'additionalProperties': False
+            "required": ["schema", "schedule", "test"],
+            "additionalProperties": False
         }
     },
 
-    'type': 'object',
-    'properties': {
-        'mp': {'type': 'string'},
-        'params': {'$ref': '#/definitions/test-params'}
+    "type": "object",
+    "properties": {
+        "mp": {"type": "string"},
+        "params": {"$ref": "#/definitions/test-params"}
     },
-    'required': ['mp', 'params'],
-    'additionalProperties': False
+    "required": ["mp", "params"],
+    "additionalProperties": False
   }
   ```
 
