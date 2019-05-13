@@ -1,0 +1,1 @@
+{"test": {"type": "throughput", "spec": {"dest": "169.239.249.2", "source": "147.91.6.246", "duration": "PT30S", "interval": "PT5S", "schema": 1}}, "schema": 1, "tool": "iperf3", "href": "https://147.91.6.246/pscheduler/tasks/2b8f9a44-c85d-4f96-ae83-e010593fc611", "schedule": {"repeat": "PT5M", "until": "2019-05-13T14:48:53.746Z", "slip": "PT5M"}}
