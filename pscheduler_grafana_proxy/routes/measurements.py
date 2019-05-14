@@ -194,8 +194,10 @@ def load_data_points(mp, task):
             runs_url, list_of_strings_schema, save_if=_schedule_is_finished):
 
         run = _get_url_json(run_url, save_if=_run_is_finished)
-        if not _run_is_finished(run):
-            continue
+        if run.get('state', '?').lower() == 'pending':
+            # responses are ordered by schedule
+            break
+
 
         if task_info['test']['type'] == 'latency':
             for p in run['result']['raw-packets']:
