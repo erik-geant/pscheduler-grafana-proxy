@@ -198,6 +198,8 @@ def load_data_points(mp, task):
             # responses are ordered by schedule
             break
 
+        if not _run_is_finished(run):
+            continue
 
         if task_info['test']['type'] == 'latency':
             for p in run['result']['raw-packets']:
@@ -207,6 +209,8 @@ def load_data_points(mp, task):
         elif task_info['test']['type'] == 'throughput':
             start_time = datetime.strptime(
                 run['start-time'], '%Y-%m-%dT%H:%M:%SZ').timestamp()
+            if 'intervals' not in run['result-merged']:
+                print('here')
             intervals = run['result-merged']['intervals']
             for s in [i['summary'] for i in intervals]:
                 mid_ts = (s['start'] + s['end'])/2
